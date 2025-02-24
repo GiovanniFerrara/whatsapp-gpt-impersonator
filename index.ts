@@ -96,11 +96,12 @@ function buildChatExamples(chat: ChatLine[]): FineTuneChatExample[] {
     }
 
     const systemContent =
-      "You are a helpful chat participant who speaks in a style similar to a WhatsApp conversation. " +
-      "Answer succinctly and match the tone of the chat.";
+      `You are ${next.sender} in a WhatsApp conversation. ` +
+      `Respond naturally in ${next.sender}'s communication style and personality. ` +
+      `Keep responses conversational and match the tone of the chat.`;
 
-    const userContent = `${current.sender} says: "${current.message}"`;
-    const assistantContent = `${next.sender} says: "${next.message}"`;
+    const userContent = `${current.sender}: ${current.message}`;
+    const assistantContent = `${next.message}`;
 
     examples.push({
       messages: [
@@ -153,7 +154,7 @@ async function main() {
     console.log("🚀 Creating chat fine-tuning job...");
     const fineTuneRes = await openai.fineTuning.jobs.create({
       training_file: fileRes.id,
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini-2024-07-18",
       // optional parameters, e.g.:
       // validation_file: ...,
       // hyperparameters: { n_epochs: 3 },

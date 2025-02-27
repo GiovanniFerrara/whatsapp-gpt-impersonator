@@ -18,7 +18,13 @@ The script processes a WhatsApp chat export file and creates a fine-tuning datas
 ### Setup:
 1. Install dependencies: `npm install`
 2. Set your OpenAI API key: `export OPENAI_API_KEY="sk-..."`
-3. Place your WhatsApp chat export file as "whatsapp.txt" in the project root
+3. Export your WhatsApp chat: 
+   - Open the chat in WhatsApp
+   - Click on the three dots (menu) > More > Export chat
+   - Choose "Without media"
+   - Save/email the exported file
+   - Rename the exported file to "whatsapp.txt" 
+   - Place it in the project root directory
 
 ### Usage:
 Run the script with: `npm start`
@@ -29,6 +35,13 @@ The script will:
 3. Create a JSONL file with the training data
 4. Upload the file to OpenAI
 5. Start a fine-tuning job
+
+Once the fine-tuning job is complete, OpenAI will provide you with a model ID. You can find this ID:
+- In the console output after the fine-tuning process completes
+- In your OpenAI dashboard (https://platform.openai.com/finetunes)
+- By running `openai api fine_tunes.list` if you have the OpenAI CLI installed
+
+You'll need this model ID when using the chat interface in Part 2.
 
 The generated model will learn to respond in a style similar to the WhatsApp conversation participants.
 

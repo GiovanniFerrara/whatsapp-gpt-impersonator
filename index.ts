@@ -137,7 +137,12 @@ async function main() {
 
     // 3. Save to JSONL
     const trainingFilePath = "training_data.jsonl";
+    // Save to root directory
     writeJsonlFile(examples, trainingFilePath);
+    
+    // Also save to the public directory for the chat interface
+    const publicTrainingFilePath = "chat-interface/public/training_data.jsonl";
+    writeJsonlFile(examples, publicTrainingFilePath);
     console.log(`✅ Created JSONL file at: ${trainingFilePath}`);
 
     // 4. Upload the file to OpenAI

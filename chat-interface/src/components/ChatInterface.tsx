@@ -10,21 +10,10 @@ import {
   Alert,
 } from "react-bootstrap";
 import OpenAI from "openai";
+import { parseJSONL, extractParticipantsFromData } from "../utils/dataParser";
 
-// Define the types of participants
-const participants = [
-  "Luca Zambello",
-  "Gian Marco",
-  "Giovanni Moretto",
-  "Aleksandra Kondricz",
-  "Jason Lopez",
-  "Erika",
-  "Nikit",
-  "Svitlana Siklitska",
-  "Matteo Pillon",
-  "Dany Suarez",
-  "Maro",
-];
+// Default participants as fallback
+const DEFAULT_PARTICIPANTS = ["Person A", "Person B", "Person C"];
 
 // Message interface
 interface Message {
@@ -34,15 +23,53 @@ interface Message {
 }
 
 const ChatInterface: React.FC = () => {
+  // State for participants
+  const [participants, setParticipants] =
+    useState<string[]>(DEFAULT_PARTICIPANTS);
+
+  // Load participants from training data
+  useEffect(() => {
+    const loadParticipants = async () => {
+      try {
+        const response = await fetch("/training_data.jsonl");
+        const data = await response.text();
+
+        // Use our utility functions to properly parse the JSONL data
+        const parsedData = parseJSONL(data);
+        const extractedParticipants = extractParticipantsFromData(parsedData);
+
+        if (extractedParticipants.length > 0) {
+          // Update state with the extracted participants
+          setParticipants(extractedParticipants);
+        }
+      } catch (error) {
+        console.error("Error loading participants:", error);
+        // Keep the default participants if there's an error
+      }
+    };
+
+    loadParticipants();
+  }, []); // Empty dependency array ensures this runs once when component mounts
+
   // State
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [respondingParticipant, setRespondingParticipant] = useState(participants[0]);
-  const [writingParticipant, setWritingParticipant] = useState(participants[1]); 
+  const [respondingParticipant, setRespondingParticipant] = useState(
+    participants[0]
+  );
+  const [writingParticipant, setWritingParticipant] = useState(participants[1]);
   const [modelId, setModelId] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
+  // Update selected participants when the participants list changes
+  useEffect(() => {
+    if (participants.length > 0) {
+      setRespondingParticipant(participants[0]);
+      setWritingParticipant(participants[1] || participants[0]);
+    }
+  }, [participants]);
+
   // Get API key from environment variable
   const apiKey = process.env.REACT_APP_OPENAI_API_KEY || "";
 
@@ -56,10 +83,10 @@ const ChatInterface: React.FC = () => {
     if (!input.trim() || !apiKey || !modelId) return;
 
     // Add user message with the selected sender
-    const userMessage: Message = { 
-      role: "user", 
+    const userMessage: Message = {
+      role: "user",
       content: input,
-      sender: writingParticipant 
+      sender: writingParticipant as string,
     };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
@@ -92,14 +119,15 @@ const ChatInterface: React.FC = () => {
       });
 
       // Get the response content and add the AI response
-      let responseContent = response.choices[0].message.content || "No response";
-      
+      let responseContent =
+        response.choices[0].message.content || "No response";
+
       // If the model included the name in the response, strip it out
       const namePrefix = `${respondingParticipant}: `;
       if (responseContent.startsWith(namePrefix)) {
         responseContent = responseContent.substring(namePrefix.length);
       }
-      
+
       const aiMessage: Message = {
         role: "assistant",
         content: responseContent,
@@ -132,7 +160,8 @@ const ChatInterface: React.FC = () => {
           <p>Interact with your fine-tuned model to mimic chat participants</p>
           {!apiKey && (
             <Alert variant="warning">
-              OpenAI API key not found in environment variables. Please add your API key to the .env file as REACT_APP_OPENAI_API_KEY.
+              OpenAI API key not found in environment variables. Please add your
+              API key to the .env file as REACT_APP_OPENAI_API_KEY.
             </Alert>
           )}
         </Col>
@@ -146,7 +175,8 @@ const ChatInterface: React.FC = () => {
               onChange={(e) => setModelId(e.target.value)}
             />
             <Form.Text className="text-muted">
-              Enter the ID of your fine-tuned model (from the output of the fine-tuning process)
+              Enter the ID of your fine-tuned model (from the output of the
+              fine-tuning process)
             </Form.Text>
           </Form.Group>
         </Col>
@@ -201,10 +231,16 @@ const ChatInterface: React.FC = () => {
                 <Form.Group>
                   <Form.Label>You are writing as:</Form.Label>
                   <Dropdown>
-                    <Dropdown.Toggle variant="outline-primary" id="dropdown-writing" className="w-100">
+                    <Dropdown.Toggle
+                      variant="outline-primary"
+                      id="dropdown-writing"
+                      className="w-100"
+                    >
                       {writingParticipant}
                     </Dropdown.Toggle>
-                    <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
+                    <Dropdown.Menu
+                      style={{ maxHeight: "200px", overflowY: "auto" }}
+                    >
                       {participants.map((name, index) => (
                         <Dropdown.Item
                           key={index}
@@ -221,10 +257,16 @@ const ChatInterface: React.FC = () => {
                 <Form.Group>
                   <Form.Label>AI should respond as:</Form.Label>
                   <Dropdown>
-                    <Dropdown.Toggle variant="outline-success" id="dropdown-responding" className="w-100">
+                    <Dropdown.Toggle
+                      variant="outline-success"
+                      id="dropdown-responding"
+                      className="w-100"
+                    >
                       {respondingParticipant}
                     </Dropdown.Toggle>
-                    <Dropdown.Menu style={{ maxHeight: "200px", overflowY: "auto" }}>
+                    <Dropdown.Menu
+                      style={{ maxHeight: "200px", overflowY: "auto" }}
+                    >
                       {participants.map((name, index) => (
                         <Dropdown.Item
                           key={index}
@@ -238,7 +280,7 @@ const ChatInterface: React.FC = () => {
                 </Form.Group>
               </Col>
             </Row>
-            
+
             <Row>
               <Col md={10}>
                 <Form.Control

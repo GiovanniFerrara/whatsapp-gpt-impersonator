@@ -1,0 +1,42 @@
+.App {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.chat-container {
+  background-image: url('https://i.pinimg.com/originals/97/c0/07/97c00759d90d786d9b6a5a18bdf6e2f6.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.chat-bubble-user {
+  background-color: #dcf8c6;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  max-width: 75%;
+  margin-left: auto;
+  position: relative;
+}
+
+.chat-bubble-assistant {
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  max-width: 75%;
+  margin-right: auto;
+  position: relative;
+}
+
+.sender-name {
+  font-weight: bold;
+  font-size: 0.8rem;
+  color: #128c7e;
+}
+
+.timestamp {
+  font-size: 0.7rem;
+  color: #999;
+  margin-top: 5px;
+  text-align: right;
+}

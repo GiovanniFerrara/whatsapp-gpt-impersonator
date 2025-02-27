@@ -1,6 +1,10 @@
 # WhatsApp Chat Fine-Tuning & Impersonation
 
+[![GitHub](https://img.shields.io/github/license/GiovanniFerrara/whatsapp-gpt-impersonator)](https://github.com/GiovanniFerrara/whatsapp-gpt-impersonator/blob/main/LICENSE)
+
 This project demonstrates how to fine-tune an OpenAI model using WhatsApp chat data and then interact with it through a React-based chat interface where you can choose which participant to impersonate.
+
+![WhatsApp Impersonator Demo](https://github.com/GiovanniFerrara/whatsapp-gpt-impersonator/raw/main/demo-screenshot.png)
 
 ## Part 1: Fine-Tuning the Model
 
@@ -38,18 +42,24 @@ The script automatically filters out messages containing "immagine omessa" (omit
 Once you have fine-tuned your model, you can use the included React application to have conversations where the AI impersonates different participants from your chat.
 
 ### Features:
-- Select which chat participant to impersonate
+- Select who you are writing as and who the AI should respond as
 - Realistic WhatsApp-style interface
 - Real-time conversation with your fine-tuned model
+- Environment variable for API key storage
 
 ### Setup:
 1. Run the setup script: `./setup-chat-interface.sh`
-2. Start the application: `cd chat-interface && npm start`
-3. Open your browser to http://localhost:3000
-4. Enter your OpenAI API key and the ID of your fine-tuned model (from the output of the fine-tuning process)
-5. Start chatting!
+2. Add your OpenAI API key to the .env file created in the chat-interface directory
+3. Start the application: `cd chat-interface && npm start`
+4. Open your browser to http://localhost:3000
+5. Enter your fine-tuned model ID (from the output of the fine-tuning process)
+6. Start chatting!
 
 For more details on the chat interface, see the [Chat Interface README](chat-interface/README.md).
+
+## Privacy Note
+
+This tool is designed to be used locally, and no conversation data is sent to any servers except the OpenAI API for generating responses. Your WhatsApp data and conversations remain private and are not shared with any third parties.
 
 ## Author: Gian Marco Ferrara
 ## License: ISC

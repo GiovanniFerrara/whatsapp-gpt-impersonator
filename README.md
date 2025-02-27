@@ -4,7 +4,8 @@
 
 This project demonstrates how to fine-tune an OpenAI model using WhatsApp chat data and then interact with it through a React-based chat interface where you can choose which participant to impersonate.
 
-![WhatsApp Impersonator Demo](https://github.com/GiovanniFerrara/whatsapp-gpt-impersonator/raw/main/demo-screenshot.png)
+<img width="1354" alt="demo-screenshot" src="https://github.com/user-attachments/assets/757e957a-3885-442c-a9f8-79983994594d" />
+
 
 ## Part 1: Fine-Tuning the Model
 
